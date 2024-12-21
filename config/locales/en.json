@@ -1,0 +1,10 @@
+{
+  "VALIDATION_ERROR": "Validation failed. Please check your input and try again",
+  "WENTS_WRONG": "Something went wrong. Please try again later.",
+  "USER_NOT_FOUND": "User not found",
+  "USER_SIGNUP_SUCCESS": "User registered successfully.",
+  "EMAIL_ALREADY_REGISTERED": " This email address is already registered. Please use a different email.",
+  "isExistingUsername": "This username is already taken. Please try a different one.",
+  "PASSWORD_MISMATCH": "Password and Confirm Password must be the same. Please double-check and try again.",
+  "TOKEN_GENERATION_ERROR": "Error generating token. Please try again later."
+}
