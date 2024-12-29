@@ -48,7 +48,7 @@ app.use(i18n.init);
 app.use('/api/user', userRoutes);
 
 // Start server
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 4000;
 server.listen(PORT, async () => {
   await startServer(server, sequelize, PORT);
 });
