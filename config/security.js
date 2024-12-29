@@ -6,7 +6,7 @@ module.exports = {
       if (
         !origin ||
         origin === 'http://localhost:3000' ||
-        origin === 'http://localhost:3000/' ||
+        origin === '*' ||
         origin === 'http://yourfrontend.com'
       ) {
         callback(null, true); // Allow the request
