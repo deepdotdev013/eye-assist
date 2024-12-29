@@ -17,12 +17,12 @@ module.exports = {
    * @method POST
    * @schema User
    * @param {string} - req.body.email - Email of the user
-   * @param {string} - req.body.password - Email of the user
-   * @param {string} - req.body.confirmPassword - Email of the user
-   * @param {string} - req.body.username - Email of the user
-   * @param {string} - req.body.firstName - Email of the user
-   * @param {string} - req.body.lastName - Email of the user
-   * @param {string} - req.body.role - Email of the user
+   * @param {string} - req.body.password - Password of the user
+   * @param {string} - req.body.confirmPassword - To confirm the entered password
+   * @param {string} - req.body.username - Username of the user
+   * @param {string} - req.body.firstName - FirstName of the user
+   * @param {string} - req.body.lastName - LastName of the user
+   * @param {string} - req.body.role - Role of the user
    * @description This method is used to sign up a user using email.
    * @returns {Object} JSON object containing the user data
    * @author Deep Panchal
@@ -32,13 +32,13 @@ module.exports = {
       // Create the bodyData
       const bodyData = {
         id: UUID.v4(),
-        email: req.body.email.toLowerCase().trim(),
+        email: req.body.email && req.body.email.toLowerCase().trim(),
         password: req.body.password,
         confirmPassword: req.body.confirmPassword,
-        username: req.body.username.toLowerCase().trim(),
-        firstName: req.body.firstName.trim(),
-        lastName: req.body.lastName.trim(),
-        role: req.body.role.toLowerCase(),
+        username: req.body.username && req.body.username.toLowerCase().trim(),
+        firstName: req.body.firstName && req.body.firstName.trim(),
+        lastName: req.body.lastName && req.body.lastName.trim(),
+        role: req.body.role && req.body.role.toLowerCase(),
         eventCode: VALIDATION_EVENTS.SignUpUserEmail,
       };
 
@@ -119,21 +119,21 @@ module.exports = {
       // Create a new user
       const newUser = await User.create(bodyData);
 
-      const inputs = {
-        subtype: emailEvents.CREATE_USER,
-        payload: {
-          lan: 'en',
-          name: newUser.firstName,
-          toUser: newUser.email,
-          MailSubject: req.__('VERIFY_EMAIL_TITLE'),
-          link: `${process.env.FRONTEND_URL}/verify-email?token=${generateVerificationToken.data}`,
-          supportEmail: process.env.SMTP_SENDER,
-          websiteLink: process.env.WEBSITE_URL,
-        },
-      };
+      // const inputs = {
+      //   subtype: emailEvents.CREATE_USER,
+      //   payload: {
+      //     lan: 'en',
+      //     name: newUser.firstName,
+      //     toUser: newUser.email,
+      //     MailSubject: req.__('VERIFY_EMAIL_TITLE'),
+      //     link: `${process.env.FRONTEND_URL}/verify-email?token=${generateVerificationToken.data}`,
+      //     supportEmail: process.env.SMTP_SENDER,
+      //     websiteLink: process.env.WEBSITE_URL,
+      //   },
+      // };
 
-      // Send the email
-      await SendMail(inputs);
+      // // Send the email
+      // await SendMail(inputs);
 
       // Success Response
       return res.status(RESPONSE_CODES.Created).json({
