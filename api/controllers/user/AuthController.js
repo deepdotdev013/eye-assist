@@ -65,7 +65,7 @@ module.exports = {
         return res.status(RESPONSE_CODES.BadRequest).json({
           status: RESPONSE_CODES.BadRequest,
           message: req.__('EMAIL_ALREADY_REGISTERED'),
-          data: {},
+          data: null,
         });
       }
 
@@ -80,7 +80,7 @@ module.exports = {
         return res.status(RESPONSE_CODES.BadRequest).json({
           status: RESPONSE_CODES.BadRequest,
           message: req.__('USERNAME_ALREADY_EXISTS'),
-          data: {},
+          data: null,
         });
       }
 
@@ -89,7 +89,7 @@ module.exports = {
         return res.status(RESPONSE_CODES.BadRequest).json({
           status: RESPONSE_CODES.BadRequest,
           message: req.__('PASSWORD_MISMATCH'),
-          data: {},
+          data: null,
         });
       }
 
@@ -153,7 +153,7 @@ module.exports = {
       return res.status(RESPONSE_CODES.ServerError).json({
         status: RESPONSE_CODES.ServerError,
         message: req.__('WENTS_WRONG'),
-        data: {},
+        data: null,
       });
     }
   },
