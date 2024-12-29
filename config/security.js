@@ -5,16 +5,17 @@ module.exports = {
       // Allow all origins or specify certain domains
       if (
         !origin ||
-        origin === "http://localhost:3000" ||
-        origin === "http://yourfrontend.com"
+        origin === 'http://localhost:3000' ||
+        origin === 'http://localhost:3000/' ||
+        origin === 'http://yourfrontend.com'
       ) {
         callback(null, true); // Allow the request
       } else {
-        callback(new Error("Not allowed by CORS")); // Reject the request
+        callback(new Error('Not allowed by CORS')); // Reject the request
       }
     },
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true, // Allow credentials like cookies or authorization headers
   },
 
@@ -27,13 +28,13 @@ module.exports = {
   rateLimiter: {
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100, // Limit each IP to 100 requests per windowMs
-    message: "Too many requests, please try again later.",
+    message: 'Too many requests, please try again later.',
   },
 
   // XSS Protection - It's a good idea to have some mechanism to prevent XSS attacks
   xssProtection: {
     enable: true, // Enable XSS protection
-    mode: "block", // Block any detected attacks
+    mode: 'block', // Block any detected attacks
   },
 
   // CSRF Protection (you can use a library like csurf)
