@@ -5,10 +5,12 @@ const {
   SALT_ROUNDS,
   UUID,
   JWT_TYPE,
+  EMAIL_EVENTS,
 } = require('../../../config/constants').constants;
 const { validateUserData } = require('../../validations/UserValidation');
 const { User } = require('../../models');
-const { generateToken } = require('../../helpers/generateToken');
+const { generateToken } = require('../../utils/tokenUtils');
+const { sendMail } = require('../../helpers/sendMail');
 
 module.exports = {
   /**
@@ -119,21 +121,22 @@ module.exports = {
       // Create a new user
       const newUser = await User.create(bodyData);
 
-      // const inputs = {
-      //   subtype: emailEvents.CREATE_USER,
-      //   payload: {
-      //     lan: 'en',
-      //     name: newUser.firstName,
-      //     toUser: newUser.email,
-      //     MailSubject: req.__('VERIFY_EMAIL_TITLE'),
-      //     link: `${process.env.FRONTEND_URL}/verify-email?token=${generateVerificationToken.data}`,
-      //     supportEmail: process.env.SMTP_SENDER,
-      //     websiteLink: process.env.WEBSITE_URL,
-      //   },
-      // };
+      // Create the input params.
+      const inputs = {
+        subType: EMAIL_EVENTS.VerifyUser,
+        payload: {
+          lang: 'en',
+          name: newUser.firstName,
+          toUser: newUser.email,
+          MailSubject: req.__('VERIFY_EMAIL_TITLE'),
+          link: `${process.env.FRONTEND_URL}/verify-email?token=${generateVerificationToken.data}`,
+          supportEmail: process.env.SMTP_SENDER,
+          websiteLink: process.env.WEBSITE_URL || 'www.google.com',
+        },
+      };
 
-      // // Send the email
-      // await SendMail(inputs);
+      // Send the email
+      await sendMail(inputs);
 
       // Success Response
       return res.status(RESPONSE_CODES.Created).json({

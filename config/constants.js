@@ -1,9 +1,11 @@
-const { defaultAttributes } = require('../api/utils/defaultAttributes');
+const { defaultAttributes } = require('../config/model');
 const EXPRESS = require('express');
 const VALIDATOR = require('validatorjs');
 const UUID = require('uuid');
 const BCRYPT = require('bcrypt');
 const JWT = require('jsonwebtoken');
+const FS = require('fs');
+const NODEMAILER = require('nodemailer');
 
 const SALT_ROUNDS = 10;
 // Response Codes
@@ -32,12 +34,24 @@ const JWT_TYPE = {
   RESET_PASSWORD: 'RESET_PASSWORD',
 };
 
+// JWT Expires
+const JWT_EXPIRY = {
+  Access: '24h',
+  Refresh: '2d',
+};
+
+// Email Events
+const EMAIL_EVENTS = {
+  VerifyUser: 'verifyUser',
+};
+
 // Export the constants
 module.exports.constants = {
   defaultAttributes,
   EXPRESS,
   VALIDATOR,
   RESPONSE_CODES,
+  FS,
   VALIDATION_EVENTS,
   USER_ROLES,
   UUID,
@@ -45,4 +59,7 @@ module.exports.constants = {
   SALT_ROUNDS,
   JWT,
   JWT_TYPE,
+  JWT_EXPIRY,
+  NODEMAILER,
+  EMAIL_EVENTS,
 };

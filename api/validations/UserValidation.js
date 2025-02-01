@@ -15,7 +15,7 @@ const validateUserData = (bodyData) => {
         confirmPassword: 'string|required',
         username: 'string|required|regex:^[a-zA-Z0-9]+([._]?[a-zA-Z0-9]+)*$',
         firstName: 'string|required',
-        lastName: 'string|required',
+        lastName: 'string',
         role: [
           'string',
           'required',
