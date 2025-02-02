@@ -7,7 +7,7 @@ module.exports = {
         !origin ||
         origin === 'http://localhost:3000' ||
         origin === '*' ||
-        origin === 'http://yourfrontend.com'
+        origin === 'https://eye-assist.netlify.app/'
       ) {
         callback(null, true); // Allow the request
       } else {
