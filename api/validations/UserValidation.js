@@ -11,8 +11,16 @@ const validateUserData = (bodyData) => {
       // Define the rules
       rules = {
         email: 'email|required',
-        password: 'string|required',
-        confirmPassword: 'string|required',
+        password: [
+          'string',
+          'required',
+          'regex:/^(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,}$/',
+        ],
+        confirmPassword: [
+          'string',
+          'required',
+          'regex:/^(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,}$/',
+        ],
         username: 'string|required|regex:^[a-zA-Z0-9]+([._]?[a-zA-Z0-9]+)*$',
         firstName: 'string|required',
         lastName: 'string',
@@ -32,6 +40,20 @@ const validateUserData = (bodyData) => {
       };
       break;
     }
+
+    case VALIDATION_EVENTS.SignInUserEmail: {
+      // Define the rules
+      rules = {
+        email: 'email|required',
+        password: [
+          'string',
+          'required',
+          'regex:/^(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,}$/',
+        ],
+      };
+      break;
+    }
+
     default:
       break;
   }

@@ -21,6 +21,7 @@ const RESPONSE_CODES = {
 const VALIDATION_EVENTS = {
   SignUpUserEmail: 'signUpUserEmail',
   VerifyUserEmail: 'verifyUserEmail',
+  SignInUserEmail: 'signInUserEmail',
 };
 
 // Roles of the user
@@ -43,6 +44,7 @@ const JWT_EXPIRY = {
 // Email Events
 const EMAIL_EVENTS = {
   VerifyUser: 'verifyUser',
+  LoginUser: 'loginUser',
 };
 
 // Export the constants

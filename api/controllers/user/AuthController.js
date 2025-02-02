@@ -204,7 +204,7 @@ module.exports = {
       });
 
       // Check if the user's email is already verified.
-      if (verifiedToken.data.isEmailVerified) {
+      if (verifiedToken?.data?.isEmailVerified) {
         return res.status(RESPONSE_CODES.BadRequest).json({
           status: RESPONSE_CODES.BadRequest,
           message: req.__('EMAIL_ALREADY_VERIFIED'),
@@ -230,6 +230,115 @@ module.exports = {
         status: RESPONSE_CODES.Ok,
         message: req.__('EMAIL_VERIFY_SUCCESS'),
         data: null,
+      });
+    } catch (error) {
+      console.log('error: ', error);
+      return res.status(RESPONSE_CODES.ServerError).json({
+        status: RESPONSE_CODES.ServerError,
+        message: req.__('WENTS_WRONG'),
+        data: null,
+      });
+    }
+  },
+
+  /**
+   * @name signInUserEmail
+   * @path /user/signin-email
+   * @method POST
+   * @schema User
+   * @param {string} - req.body.email - Email of the user
+   * @param {string} - req.body.password - Password of the user
+   * @description This method is used to sign-in a user.
+   * @returns {Object} JSON object containing the user data
+   * @author Deep Panchal
+   */
+  signInUserEmail: async (req, res) => {
+    try {
+      // Create the bodyData
+      const bodyData = {
+        email: req.body.email && req.body.email.trim().toLowerCase(),
+        password: req.body.password,
+        eventCode: VALIDATION_EVENTS.SignInUserEmail,
+      };
+
+      // Validate the incoming data
+      const result = validateUserData(bodyData);
+
+      // If the validation fails, send an error
+      if (result.hasError) {
+        return res.status(RESPONSE_CODES.BadRequest).json({
+          status: RESPONSE_CODES.BadRequest,
+          message: req.__('VALIDATION_ERROR'),
+          error: result.errors,
+        });
+      }
+
+      // Check if the user exists.
+      const isExistingUser = await User.findOne({
+        where: {
+          email: bodyData.email,
+          isDeleted: false,
+        },
+      });
+      if (!isExistingUser) {
+        return res.status(RESPONSE_CODES.BadRequest).json({
+          status: RESPONSE_CODES.BadRequest,
+          message: req.__('USER_NOT_FOUND'),
+          data: null,
+        });
+      }
+
+      // Check if the email is not verified.
+      if (!isExistingUser.isEmailVerified) {
+        return res.status(RESPONSE_CODES.BadRequest).json({
+          status: RESPONSE_CODES.BadRequest,
+          message: req.__('EMAIL_NOT_VERIFIED'),
+          data: null,
+        });
+      }
+
+      // Match the incoming password with the user's saved password.
+      const isPasswordMatch = await BCRYPT.compare(
+        bodyData.password,
+        isExistingUser.password,
+      );
+
+      // If the password didn't matched, send error.
+      if (!isPasswordMatch) {
+        return res.status(RESPONSE_CODES.BadRequest).json({
+          status: RESPONSE_CODES.BadRequest,
+          message: req.__('INCORRECT_CREDS'),
+          data: null,
+        });
+      }
+
+      // Generate the JWT Token
+      const token = await generateToken({
+        id: bodyData.id,
+        email: bodyData.email,
+        type: JWT_TYPE.LoginUser,
+      });
+
+      // If any error occurs while generating the token, then send an error
+      if (token.hasError) {
+        return res.status(RESPONSE_CODES.BadRequest).json({
+          status: RESPONSE_CODES.BadRequest,
+          message: req.__('TOKEN_GENERATION_ERROR'),
+          error: token.error,
+        });
+      }
+
+      // Success Response
+      return res.status(RESPONSE_CODES.Ok).json({
+        status: RESPONSE_CODES.Ok,
+        message: req.__('LOGIN_SUCCESS'),
+        data: {
+          id: isExistingUser.id,
+          email: isExistingUser.email,
+          username: isExistingUser.username,
+          token: token.data,
+          stepComplete: isExistingUser.stepComplete,
+        },
       });
     } catch (error) {
       console.log('error: ', error);

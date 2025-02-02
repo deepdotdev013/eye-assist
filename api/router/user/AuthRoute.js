@@ -7,9 +7,8 @@ const ROUTER = EXPRESS.Router();
 // Import the controller
 const AuthController = require('../../controllers/user/AuthController');
 
-ROUTER.post('/signup-email', AuthController.signUpUserEmail).post(
-  '/verify-email',
-  AuthController.verifyUserEmail,
-);
+ROUTER.post('/signup-email', AuthController.signUpUserEmail)
+  .post('/verify-email', AuthController.verifyUserEmail)
+  .post('/signin-email', AuthController.signInUserEmail);
 
 module.exports = ROUTER;
