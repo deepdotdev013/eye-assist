@@ -4,8 +4,8 @@ module.exports = {
     origin: (origin, callback) => {
       // Allow all origins or specify certain domains
       if (
+        !origin ||
         origin === 'http://localhost:3000' ||
-        origin === '*' ||
         origin === 'https://eye-assist.netlify.app'
       ) {
         callback(null, true); // Allow the request
@@ -13,8 +13,8 @@ module.exports = {
         callback(new Error('Not allowed by CORS')); // Reject the request
       }
     },
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    allowedHeaders: ['*'],
     credentials: true, // Allow credentials like cookies or authorization headers
   },
 
