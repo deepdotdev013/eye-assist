@@ -4,10 +4,9 @@ module.exports = {
     origin: (origin, callback) => {
       // Allow all origins or specify certain domains
       if (
-        !origin ||
         origin === 'http://localhost:3000' ||
         origin === '*' ||
-        origin === 'https://eye-assist.netlify.app/'
+        origin === 'https://eye-assist.netlify.app'
       ) {
         callback(null, true); // Allow the request
       } else {
