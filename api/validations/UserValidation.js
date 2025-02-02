@@ -25,6 +25,13 @@ const validateUserData = (bodyData) => {
       break;
     }
 
+    case VALIDATION_EVENTS.VerifyUserEmail: {
+      // Define the rules
+      rules = {
+        token: 'string|required',
+      };
+      break;
+    }
     default:
       break;
   }

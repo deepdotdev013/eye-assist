@@ -1,7 +1,5 @@
 const { User } = require('../models');
-
-const { JWT, JWT_TYPE, JWT_EXPIRY } =
-  require('../../config/constants').constants;
+const { JWT, JWT_EXPIRY } = require('../../config/constants').constants;
 
 // Generate a token
 const generateToken = async (tokenData) => {
@@ -31,8 +29,11 @@ const generateToken = async (tokenData) => {
 // Verify a token
 const verifyToken = async (token, type) => {
   try {
+    // Verify the token using jwt secret.
     const decodedTokenData = await JWT.verify(token, process.env.JWT_SECRET);
+    console.log('decodedTokenData: ', decodedTokenData);
 
+    // Checks if the token has expired or not.
     if (decodedTokenData.exp < Date.now() / 1000) {
       return {
         hasError: true,
@@ -42,16 +43,22 @@ const verifyToken = async (token, type) => {
       };
     }
 
-    let where = { token };
-    if (decodedTokenData.type === JWT_TYPE.VERIFY_EMAIL) {
+    // Create a dynamic where condition.
+    let where = { verificationToken: token };
+
+    // Check the incoming type of the token.
+    if (decodedTokenData.type === type) {
       where.id = decodedTokenData.id;
       where.email = decodedTokenData.email;
     }
 
+    // Find the user with the where condition.
     let user = await User.findOne({ where });
 
+    // Get the user data.
     user = user && user.get({ plain: true });
 
+    // Check if the user is present or not.
     if (!user) {
       return {
         hasError: true,
@@ -61,6 +68,7 @@ const verifyToken = async (token, type) => {
       };
     }
 
+    // Success Response.
     return {
       hasError: false,
       message: 'Token Verified Successfully',

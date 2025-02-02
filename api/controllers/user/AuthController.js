@@ -9,7 +9,7 @@ const {
 } = require('../../../config/constants').constants;
 const { validateUserData } = require('../../validations/UserValidation');
 const { User } = require('../../models');
-const { generateToken } = require('../../utils/tokenUtils');
+const { generateToken, verifyToken } = require('../../utils/tokenUtils');
 const { sendMail } = require('../../helpers/sendMail');
 
 module.exports = {
@@ -102,7 +102,7 @@ module.exports = {
       const generateVerificationToken = await generateToken({
         id: bodyData.id,
         email: bodyData.email,
-        type: JWT_TYPE.VERIFY_EMAIL,
+        type: JWT_TYPE.VerifyEmail,
       });
 
       // If any error occurs while generating the token, then send an error
@@ -150,6 +150,86 @@ module.exports = {
           lastName: newUser.lastName,
           role: newUser.role,
         },
+      });
+    } catch (error) {
+      console.log('error: ', error);
+      return res.status(RESPONSE_CODES.ServerError).json({
+        status: RESPONSE_CODES.ServerError,
+        message: req.__('WENTS_WRONG'),
+        data: null,
+      });
+    }
+  },
+
+  /**
+   * @name verifyUserEmail
+   * @path /user/verify-email
+   * @method POST
+   * @schema User
+   * @param {string} - req.body.token - Token of the created user
+   * @description This method is used to verify a user's email using key token.
+   * @returns {Object} JSON object containing the user data
+   * @author Deep Panchal
+   */
+  verifyUserEmail: async (req, res) => {
+    try {
+      // Create the bodyData
+      const bodyData = {
+        token: req.body.token,
+        eventCode: VALIDATION_EVENTS.VerifyUserEmail,
+      };
+
+      // Validate the incoming data
+      const result = validateUserData(bodyData);
+
+      // If the validation fails, send an error
+      if (result.hasError) {
+        return res.status(RESPONSE_CODES.BadRequest).json({
+          status: RESPONSE_CODES.BadRequest,
+          message: req.__('VALIDATION_ERROR'),
+          error: result.errors,
+        });
+      }
+
+      // Verify the token
+      const verifiedToken = await verifyToken(
+        bodyData.token,
+        JWT_TYPE.VerifyEmail,
+      ).catch((error) => {
+        return res.status(RESPONSE_CODES.BadRequest).json({
+          status: RESPONSE_CODES.BadRequest,
+          message: req.__('INVALID_TOKEN'),
+          error: error,
+        });
+      });
+
+      // Check if the user's email is already verified.
+      if (verifiedToken.data.isEmailVerified) {
+        return res.status(RESPONSE_CODES.BadRequest).json({
+          status: RESPONSE_CODES.BadRequest,
+          message: req.__('EMAIL_ALREADY_VERIFIED'),
+          data: null,
+        });
+      }
+
+      // Verify the user's email.
+      await User.update(
+        {
+          isEmailVerified: true,
+        },
+        {
+          where: {
+            id: verifiedToken.data.id,
+            isDeleted: false,
+          },
+        },
+      );
+
+      // Success Response
+      return res.status(RESPONSE_CODES.Ok).json({
+        status: RESPONSE_CODES.Ok,
+        message: req.__('EMAIL_VERIFY_SUCCESS'),
+        data: null,
       });
     } catch (error) {
       console.log('error: ', error);

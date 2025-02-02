@@ -20,6 +20,7 @@ const RESPONSE_CODES = {
 // Validation Events
 const VALIDATION_EVENTS = {
   SignUpUserEmail: 'signUpUserEmail',
+  VerifyUserEmail: 'verifyUserEmail',
 };
 
 // Roles of the user
@@ -30,8 +31,7 @@ const USER_ROLES = {
 
 // JWT Types
 const JWT_TYPE = {
-  VERIFY_EMAIL: 'VERIFY_EMAIL',
-  RESET_PASSWORD: 'RESET_PASSWORD',
+  VerifyEmail: 'verifyEmail',
 };
 
 // JWT Expires
