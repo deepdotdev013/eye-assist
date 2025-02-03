@@ -74,10 +74,6 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
-    isRegisteredUser: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-    },
     isEmailVerified: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,

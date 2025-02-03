@@ -15,7 +15,6 @@ CREATE TABLE
 		"gender" VARCHAR NULL,
 		"mobileNumber" INTEGER NULL,
 		"token" VARCHAR NULL,
-		"isRegisteredUser" BOOLEAN DEFAULT FALSE,
 		"isEmailVerified" BOOLEAN DEFAULT FALSE,
 		"verificationToken" VARCHAR NULL,
 		"stepComplete" SMALLINT DEFAULT 0,
