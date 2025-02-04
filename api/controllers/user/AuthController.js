@@ -191,6 +191,21 @@ module.exports = {
         });
       }
 
+      // Find the user with the incoming token in its verificationToken.
+      const user = await User.findOne({
+        where: {
+          verificationToken: bodyData.token,
+          isDeleted: false,
+        },
+      });
+      if (!user) {
+        return res.status(RESPONSE_CODES.BadRequest).json({
+          status: RESPONSE_CODES.BadRequest,
+          message: req.__('USER_NOT_FOUND'),
+          error: error,
+        });
+      }
+
       // Verify the token
       const verifiedToken = await verifyToken(
         bodyData.token,
@@ -216,6 +231,9 @@ module.exports = {
       await User.update(
         {
           isEmailVerified: true,
+          verificationToken: null,
+          updatedAt: Date.now(),
+          updatedBy: user.id,
         },
         {
           where: {
@@ -327,6 +345,20 @@ module.exports = {
           error: token.error,
         });
       }
+
+      // Update the user.
+      await User.update(
+        {
+          token: token.data,
+          updatedAt: Date.now(),
+          updatedBy: isExistingUser.id,
+        },
+        {
+          where: {
+            id: isExistingUser.id,
+          },
+        },
+      );
 
       // Success Response
       return res.status(RESPONSE_CODES.Ok).json({
