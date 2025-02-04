@@ -33,6 +33,7 @@ const USER_ROLES = {
 // JWT Types
 const JWT_TYPE = {
   VerifyEmail: 'verifyEmail',
+  LoginUser: 'loginUser',
 };
 
 // JWT Expires

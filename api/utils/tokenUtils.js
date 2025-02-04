@@ -31,7 +31,6 @@ const verifyToken = async (token, type) => {
   try {
     // Verify the token using jwt secret.
     const decodedTokenData = await JWT.verify(token, process.env.JWT_SECRET);
-    console.log('decodedTokenData: ', decodedTokenData);
 
     // Checks if the token has expired or not.
     if (decodedTokenData.exp < Date.now() / 1000) {
