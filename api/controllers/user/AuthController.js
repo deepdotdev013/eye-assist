@@ -8,7 +8,7 @@ const {
   EMAIL_EVENTS,
 } = require('../../../config/constants').constants;
 const { validateUserData } = require('../../validations/UserValidation');
-const { User } = require('../../models');
+const { User, sequelize } = require('../../models');
 const { generateToken, verifyToken } = require('../../utils/tokenUtils');
 const { sendMail } = require('../../helpers/sendMail');
 
@@ -371,6 +371,64 @@ module.exports = {
           token: token.data,
           stepComplete: isExistingUser.stepComplete,
         },
+      });
+    } catch (error) {
+      console.log('error: ', error);
+      return res.status(RESPONSE_CODES.ServerError).json({
+        status: RESPONSE_CODES.ServerError,
+        message: req.__('WENTS_WRONG'),
+        data: null,
+      });
+    }
+  },
+
+  /**
+   * @name getUserDetails
+   * @path /user/get-user-details
+   * @method GET
+   * @schema User
+   * @description This method is used to fetch all the details of logged in user.
+   * @returns {Object} JSON object containing the user data
+   * @author Deep Panchal
+   */
+  getUserDetails: async (req, res) => {
+    try {
+      // Query to fetch users details.
+      const fetchUserDetails = `SELECT
+        	U."id",
+        	U."profilePhotoId",
+        	U."username",
+        	U."firstName",
+        	U."lastName",
+        	U."email",
+        	U."role",
+        	U."dob",
+        	U."country",
+        	U."age",
+        	U."gender",
+        	U."mobileNumber",
+        	U."token",
+        	U."isEmailVerified",
+        	U."stepComplete"
+        FROM
+        	"user" U
+        WHERE
+        	U."isDeleted" = FALSE
+        	AND U."id" = :userId`;
+
+      // Run the sql query using sequelize query.
+      const getUserDetails = await sequelize.query(fetchUserDetails, {
+        type: sequelize.QueryTypes.SELECT,
+        replacements: {
+          userId: req.user.id,
+        },
+      });
+
+      // Success Response
+      return res.status(RESPONSE_CODES.Ok).json({
+        status: RESPONSE_CODES.Ok,
+        message: null,
+        data: getUserDetails?.[0] || {},
       });
     } catch (error) {
       console.log('error: ', error);
