@@ -6,6 +6,7 @@ const BCRYPT = require('bcrypt');
 const JWT = require('jsonwebtoken');
 const FS = require('fs');
 const NODEMAILER = require('nodemailer');
+const AXIOS = require('axios');
 
 const SALT_ROUNDS = 10;
 // Response Codes
@@ -65,4 +66,5 @@ module.exports.constants = {
   JWT_EXPIRY,
   NODEMAILER,
   EMAIL_EVENTS,
+  AXIOS,
 };

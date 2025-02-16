@@ -439,4 +439,41 @@ module.exports = {
       });
     }
   },
+
+  /**
+   * @name preventServerAsleep
+   * @path /user/prevent-asleep
+   * @method GET
+   * @schema User
+   * @description This method is used to keep the server awake and prevent from asleep.
+   * @returns {Object} JSON object containing the user data
+   * @author Deep Panchal
+   */
+  preventServerAsleep: async (req, res) => {
+    try {
+      // Ping the database to fetch the requested record.
+      const user = await User.findAll({
+        where: {
+          isDeleted: false,
+        },
+        limit: 1,
+        attributes: ['role'],
+      });
+
+      console.log('USER ==> ', user?.[0].dataValues.role);
+
+      return res.status(RESPONSE_CODES.Ok).json({
+        status: RESPONSE_CODES.Ok,
+        message: req.__('SERVER_AWAKE'),
+        data: user?.[0].dataValues.role,
+      });
+    } catch (error) {
+      console.log('error: ', error);
+      return res.status(RESPONSE_CODES.ServerError).json({
+        status: RESPONSE_CODES.ServerError,
+        message: req.__('WENTS_WRONG'),
+        data: null,
+      });
+    }
+  },
 };

@@ -4,7 +4,7 @@ module.exports = {
   jobs: {
     keepServiceAwake: {
       schedule: '*/10 * * * *',
-      start: process.env.CRON_RUNNING === 'Y',
+      start: process.env.CRON_RUNNING === 'N',
       onTick: async () => {
         try {
           await keepServiceAwake();

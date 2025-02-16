@@ -1,20 +1,31 @@
-const { User } = require('../models');
+const { AXIOS } = require('../../config/constants').constants;
+
+const URL = process.env.BACKEND_URL;
+
+const INTERVAL = 300000;
 
 const keepServiceAwake = async () => {
   try {
-    // Ping the database to fetch the requested record.
-    const user = await User.findAll({
-      where: {
-        isDeleted: false,
-      },
-      limit: 1,
-      attributes: ['role'],
-    });
-
-    console.log('USER ==> ', user?.[0].dataValues.role);
+    AXIOS.get(`${URL}/api/user/prevent-asleep`)
+      .then((response) => {
+        console.log(
+          `Reloaded at ${Date.now()}: Status Code ${response.status}`,
+        );
+      })
+      .catch((error) => {
+        console.error(`Error reloading at ${Date.now()}:`, error.message);
+      });
   } catch (error) {
     console.log('Error in keepServiceAwake helper --> ', error);
   }
 };
 
-module.exports = { keepServiceAwake };
+const startPinging = () => {
+  // Make the first ping immediately
+  keepServiceAwake();
+
+  // Set the interval to ping every 5 minutes (300000 ms)
+  setInterval(keepServiceAwake, INTERVAL);
+};
+
+module.exports = { keepServiceAwake, startPinging };
