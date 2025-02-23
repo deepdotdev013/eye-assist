@@ -23,6 +23,7 @@ const VALIDATION_EVENTS = {
   SignUpUserEmail: 'signUpUserEmail',
   VerifyUserEmail: 'verifyUserEmail',
   SignInUserEmail: 'signInUserEmail',
+  OnBoardUser: 'onBoardUser',
 };
 
 // Roles of the user

@@ -13,7 +13,7 @@ CREATE TABLE
 		"country" VARCHAR NULL,
 		"age" SMALLINT NULL,
 		"gender" VARCHAR NULL,
-		"mobileNumber" INTEGER NULL,
+		"mobileNumber" VARCHAR NULL,
 		"token" VARCHAR NULL,
 		"isEmailVerified" BOOLEAN DEFAULT FALSE,
 		"verificationToken" VARCHAR NULL,

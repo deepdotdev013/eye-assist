@@ -67,7 +67,7 @@ const User = sequelize.define(
       allowNull: true,
     },
     mobileNumber: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: true,
     },
     token: {

@@ -11,6 +11,7 @@ const { validateUserData } = require('../../validations/UserValidation');
 const { User, sequelize } = require('../../models');
 const { generateToken, verifyToken } = require('../../utils/tokenUtils');
 const { sendMail } = require('../../helpers/sendMail');
+const { checkUpdatedData } = require('../../helpers/checkUpdatedData');
 
 module.exports = {
   /**
@@ -466,6 +467,116 @@ module.exports = {
         status: RESPONSE_CODES.Ok,
         message: req.__('SERVER_AWAKE'),
         data: user?.[0].dataValues.role,
+      });
+    } catch (error) {
+      console.log('error: ', error);
+      return res.status(RESPONSE_CODES.ServerError).json({
+        status: RESPONSE_CODES.ServerError,
+        message: req.__('WENTS_WRONG'),
+        data: null,
+      });
+    }
+  },
+
+  /**
+   * @name onBoardUser
+   * @path /user/onboard-user
+   * @method POST
+   * @schema User
+   * @param {boolean} - req.body.isPageSkipped - Flag to check if user skipped the page
+   * @param {number} - req.body.stepComplete - Number of step user completed
+   * @param {date} - req.body.dob - Date of birth of the user
+   * @param {number} - req.body.age - Age of the user
+   * @param {string} - req.body.gender - Gender of the user
+   * @param {string} - req.body.country - Country of the user
+   * @param {string} - req.body.mobileNumber - Mobile number of the user
+   * @description This method is used to add the user details step wise.
+   * @returns {Object} JSON object containing the user data
+   * @author Deep Panchal
+   */
+  onBoardUser: async (req, res) => {
+    try {
+      // Create the bodyData
+      const bodyData = {
+        userId: req.user.id,
+        isPageSkipped: req.body.isPageSkipped,
+        stepComplete: req.body.stepComplete,
+        dob: req.body.dob,
+        age: req.body.age,
+        gender: req.body.gender,
+        country: req.body.country,
+        mobileNumber: req.body.mobileNumber,
+        eventCode: VALIDATION_EVENTS.OnBoardUser,
+      };
+
+      // Validate the incoming data
+      const result = validateUserData(bodyData);
+
+      // If the validation fails, send an error
+      if (result.hasError) {
+        return res.status(RESPONSE_CODES.BadRequest).json({
+          status: RESPONSE_CODES.BadRequest,
+          message: req.__('VALIDATION_ERROR'),
+          error: result.errors,
+        });
+      }
+
+      // Check if the user is an existing user.
+      const existingUser = await User.findOne({
+        where: { id: bodyData.userId, isDeleted: false },
+      });
+      if (!existingUser) {
+        return res.status(RESPONSE_CODES.BadRequest).json({
+          status: RESPONSE_CODES.BadRequest,
+          message: req.__('USER_NOT_FOUND'),
+          data: null,
+        });
+      }
+
+      // Get the updated data only.
+      const updatedData = await checkUpdatedData(bodyData);
+
+      // Ensure stepComplete doesn't decrease
+      if (bodyData.stepComplete < existingUser.stepComplete) {
+        delete updatedData.stepComplete;
+      }
+
+      // Check if the page is skipped.
+      if (bodyData.isPageSkipped) {
+        // Only update the stepComplete.
+        await User.update(
+          {
+            stepComplete: bodyData.stepComplete,
+            updatedAt: Date.now(),
+            updatedBy: bodyData.userId,
+          },
+          {
+            where: {
+              id: bodyData.userId,
+              isDeleted: false,
+            },
+          },
+        );
+      } else {
+        // If the user clicks on continue, then save the data.
+        if (bodyData.stepComplete === 1) {
+          // Update the user details for step 1.
+          await User.update(updatedData, {
+            where: {
+              id: bodyData.userId,
+              isDeleted: false,
+            },
+          });
+        } else if (bodyData.stepComplete === 2) {
+        } else if (bodyData.stepComplete === 3) {
+        }
+      }
+
+      // Success Response
+      return res.status(RESPONSE_CODES.Ok).json({
+        status: RESPONSE_CODES.Ok,
+        message: req.__('STEP_COMPLETE_SUCCESS'),
+        data: null,
       });
     } catch (error) {
       console.log('error: ', error);

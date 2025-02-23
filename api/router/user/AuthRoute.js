@@ -14,6 +14,7 @@ ROUTER.post('/signup-email', AuthController.signUpUserEmail)
   .post('/verify-email', AuthController.verifyUserEmail)
   .post('/signin-email', AuthController.signInUserEmail)
   .get('/get-user-details', [CheckUserAuth], AuthController.getUserDetails)
-  .get('/prevent-asleep', AuthController.preventServerAsleep);
+  .get('/prevent-asleep', AuthController.preventServerAsleep)
+  .post('/onboard-user', [CheckUserAuth], AuthController.onBoardUser);
 
 module.exports = ROUTER;
