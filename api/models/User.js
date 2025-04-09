@@ -86,6 +86,18 @@ const User = sequelize.define(
       type: DataTypes.SMALLINT,
       defaultValue: 0,
     },
+    highestQualification: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    stream: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    aboutMe: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     tableName: 'user',
