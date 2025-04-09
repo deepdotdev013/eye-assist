@@ -54,6 +54,20 @@ const validateUserData = (bodyData) => {
       break;
     }
 
+    case VALIDATION_EVENTS.OnBoardUser: {
+      // Define the rules
+      rules = {
+        isPageSkipped: 'boolean|required',
+        stepComplete: 'integer|required',
+        dob: 'date',
+        age: 'integer',
+        gender: 'string',
+        country: 'string',
+        mobileNumber: 'string',
+      };
+      break;
+    }
+
     default:
       break;
   }

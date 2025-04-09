@@ -1,5 +1,6 @@
 const { User } = require('../models');
-const { JWT, JWT_EXPIRY } = require('../../config/constants').constants;
+const { JWT, JWT_EXPIRY, JWT_TYPE } =
+  require('../../config/constants').constants;
 
 // Generate a token
 const generateToken = async (tokenData) => {
@@ -43,12 +44,13 @@ const verifyToken = async (token, type) => {
     }
 
     // Create a dynamic where condition.
-    let where = { verificationToken: token };
+    let where = {};
 
-    // Check the incoming type of the token.
-    if (decodedTokenData.type === type) {
-      where.id = decodedTokenData.id;
-      where.email = decodedTokenData.email;
+    // Check the JWT type with the incoming type
+    if (type === JWT_TYPE.VerifyEmail) {
+      where.verificationToken = token;
+    } else if (type === JWT_TYPE.LoginUser) {
+      where.token = token;
     }
 
     // Find the user with the where condition.

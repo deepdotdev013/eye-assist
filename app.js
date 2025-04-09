@@ -21,6 +21,9 @@ const sessionMiddleware = require('./config/session');
 const { sequelize } = require('./api/models');
 const { startServer } = require('./api/utils/listenServer');
 
+// Import the keepServiceAwake helper
+const { startPinging } = require('./api/helpers/keepServiceAwake');
+
 // Initialize i18n
 const i18n = new I18n({
   locales,
@@ -51,4 +54,7 @@ app.use('/api/user', userRoutes);
 const PORT = process.env.PORT || 4000;
 server.listen(PORT, async () => {
   await startServer(server, sequelize, PORT);
+
+  // Call startPing to keep the service alive (ping every 5 minutes)
+  startPinging();
 });

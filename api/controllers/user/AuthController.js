@@ -8,9 +8,10 @@ const {
   EMAIL_EVENTS,
 } = require('../../../config/constants').constants;
 const { validateUserData } = require('../../validations/UserValidation');
-const { User } = require('../../models');
+const { User, sequelize } = require('../../models');
 const { generateToken, verifyToken } = require('../../utils/tokenUtils');
 const { sendMail } = require('../../helpers/sendMail');
+const { checkUpdatedData } = require('../../helpers/checkUpdatedData');
 
 module.exports = {
   /**
@@ -371,6 +372,211 @@ module.exports = {
           token: token.data,
           stepComplete: isExistingUser.stepComplete,
         },
+      });
+    } catch (error) {
+      console.log('error: ', error);
+      return res.status(RESPONSE_CODES.ServerError).json({
+        status: RESPONSE_CODES.ServerError,
+        message: req.__('WENTS_WRONG'),
+        data: null,
+      });
+    }
+  },
+
+  /**
+   * @name getUserDetails
+   * @path /user/get-user-details
+   * @method GET
+   * @schema User
+   * @description This method is used to fetch all the details of logged in user.
+   * @returns {Object} JSON object containing the user data
+   * @author Deep Panchal
+   */
+  getUserDetails: async (req, res) => {
+    try {
+      // Query to fetch users details.
+      const fetchUserDetails = `SELECT
+        	U."id",
+        	U."profilePhotoId",
+        	U."username",
+        	U."firstName",
+        	U."lastName",
+        	U."email",
+        	U."role",
+        	U."dob",
+        	U."country",
+        	U."age",
+        	U."gender",
+        	U."mobileNumber",
+        	U."token",
+        	U."isEmailVerified",
+        	U."stepComplete"
+        FROM
+        	"user" U
+        WHERE
+        	U."isDeleted" = FALSE
+        	AND U."id" = :userId`;
+
+      // Run the sql query using sequelize query.
+      const getUserDetails = await sequelize.query(fetchUserDetails, {
+        type: sequelize.QueryTypes.SELECT,
+        replacements: {
+          userId: req.user.id,
+        },
+      });
+
+      // Success Response
+      return res.status(RESPONSE_CODES.Ok).json({
+        status: RESPONSE_CODES.Ok,
+        message: null,
+        data: getUserDetails?.[0] || {},
+      });
+    } catch (error) {
+      console.log('error: ', error);
+      return res.status(RESPONSE_CODES.ServerError).json({
+        status: RESPONSE_CODES.ServerError,
+        message: req.__('WENTS_WRONG'),
+        data: null,
+      });
+    }
+  },
+
+  /**
+   * @name preventServerAsleep
+   * @path /user/prevent-asleep
+   * @method GET
+   * @schema User
+   * @description This method is used to keep the server awake and prevent from asleep.
+   * @returns {Object} JSON object containing the user data
+   * @author Deep Panchal
+   */
+  preventServerAsleep: async (req, res) => {
+    try {
+      // Ping the database to fetch the requested record.
+      const user = await User.findAll({
+        where: {
+          isDeleted: false,
+        },
+        limit: 1,
+        attributes: ['role'],
+      });
+
+      console.log('USER ==> ', user?.[0].dataValues.role);
+
+      return res.status(RESPONSE_CODES.Ok).json({
+        status: RESPONSE_CODES.Ok,
+        message: req.__('SERVER_AWAKE'),
+        data: user?.[0].dataValues.role,
+      });
+    } catch (error) {
+      console.log('error: ', error);
+      return res.status(RESPONSE_CODES.ServerError).json({
+        status: RESPONSE_CODES.ServerError,
+        message: req.__('WENTS_WRONG'),
+        data: null,
+      });
+    }
+  },
+
+  /**
+   * @name onBoardUser
+   * @path /user/onboard-user
+   * @method POST
+   * @schema User
+   * @param {boolean} - req.body.isPageSkipped - Flag to check if user skipped the page
+   * @param {number} - req.body.stepComplete - Number of step user completed
+   * @param {date} - req.body.dob - Date of birth of the user
+   * @param {number} - req.body.age - Age of the user
+   * @param {string} - req.body.gender - Gender of the user
+   * @param {string} - req.body.country - Country of the user
+   * @param {string} - req.body.mobileNumber - Mobile number of the user
+   * @description This method is used to add the user details step wise.
+   * @returns {Object} JSON object containing the user data
+   * @author Deep Panchal
+   */
+  onBoardUser: async (req, res) => {
+    try {
+      // Create the bodyData
+      const bodyData = {
+        userId: req.user.id,
+        isPageSkipped: req.body.isPageSkipped,
+        stepComplete: req.body.stepComplete,
+        dob: req.body.dob,
+        age: req.body.age,
+        gender: req.body.gender,
+        country: req.body.country,
+        mobileNumber: req.body.mobileNumber,
+        eventCode: VALIDATION_EVENTS.OnBoardUser,
+      };
+
+      // Validate the incoming data
+      const result = validateUserData(bodyData);
+
+      // If the validation fails, send an error
+      if (result.hasError) {
+        return res.status(RESPONSE_CODES.BadRequest).json({
+          status: RESPONSE_CODES.BadRequest,
+          message: req.__('VALIDATION_ERROR'),
+          error: result.errors,
+        });
+      }
+
+      // Check if the user is an existing user.
+      const existingUser = await User.findOne({
+        where: { id: bodyData.userId, isDeleted: false },
+      });
+      if (!existingUser) {
+        return res.status(RESPONSE_CODES.BadRequest).json({
+          status: RESPONSE_CODES.BadRequest,
+          message: req.__('USER_NOT_FOUND'),
+          data: null,
+        });
+      }
+
+      // Get the updated data only.
+      const updatedData = await checkUpdatedData(bodyData);
+
+      // Ensure stepComplete doesn't decrease
+      if (bodyData.stepComplete < existingUser.stepComplete) {
+        delete updatedData.stepComplete;
+      }
+
+      // Check if the page is skipped.
+      if (bodyData.isPageSkipped) {
+        // Only update the stepComplete.
+        await User.update(
+          {
+            stepComplete: bodyData.stepComplete,
+            updatedAt: Date.now(),
+            updatedBy: bodyData.userId,
+          },
+          {
+            where: {
+              id: bodyData.userId,
+              isDeleted: false,
+            },
+          },
+        );
+      } else {
+        // If the user clicks on continue, then save the data.
+        if (bodyData.stepComplete === 1) {
+          // Update the user details for step 1.
+          await User.update(updatedData, {
+            where: {
+              id: bodyData.userId,
+              isDeleted: false,
+            },
+          });
+        } else if (bodyData.stepComplete === 2) {
+        } else if (bodyData.stepComplete === 3) {
+        }
+      }
+
+      // Success Response
+      return res.status(RESPONSE_CODES.Ok).json({
+        status: RESPONSE_CODES.Ok,
+        message: req.__('STEP_COMPLETE_SUCCESS'),
+        data: null,
       });
     } catch (error) {
       console.log('error: ', error);

@@ -13,5 +13,9 @@
   "EMAIL_VERIFY_SUCCESS": "Your email has been successfully verified.",
   "EMAIL_NOT_VERIFIED": "Your email is not verified. Please verify your email to proceed.",
   "INCORRECT_CREDS": "Incorrect Email or Password.",
-  "LOGIN_SUCCESS": "Login successful! Let's get started."
+  "LOGIN_SUCCESS": "Login successful! Let's get started.",
+  "AUTHORIZATION_TOKEN_REQUIRED": "Authorization token is missing. Please provide a valid token to proceed.",
+  "INVALID_AUTHORIZATION_TOKEN": "Invalid authorization token. Please provide a valid token or reauthenticate.",
+  "SERVER_AWAKE": "Server is awake and ready to serve you. ✅",
+  "STEP_COMPLETE_SUCCESS": "This Step has been completed successfully."
 }

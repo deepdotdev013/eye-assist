@@ -6,6 +6,7 @@ const BCRYPT = require('bcrypt');
 const JWT = require('jsonwebtoken');
 const FS = require('fs');
 const NODEMAILER = require('nodemailer');
+const AXIOS = require('axios');
 
 const SALT_ROUNDS = 10;
 // Response Codes
@@ -22,6 +23,7 @@ const VALIDATION_EVENTS = {
   SignUpUserEmail: 'signUpUserEmail',
   VerifyUserEmail: 'verifyUserEmail',
   SignInUserEmail: 'signInUserEmail',
+  OnBoardUser: 'onBoardUser',
 };
 
 // Roles of the user
@@ -65,4 +67,5 @@ module.exports.constants = {
   JWT_EXPIRY,
   NODEMAILER,
   EMAIL_EVENTS,
+  AXIOS,
 };

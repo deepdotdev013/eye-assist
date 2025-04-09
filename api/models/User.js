@@ -67,7 +67,7 @@ const User = sequelize.define(
       allowNull: true,
     },
     mobileNumber: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: true,
     },
     token: {
@@ -85,6 +85,18 @@ const User = sequelize.define(
     stepComplete: {
       type: DataTypes.SMALLINT,
       defaultValue: 0,
+    },
+    highestQualification: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    stream: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    aboutMe: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
   },
   {
