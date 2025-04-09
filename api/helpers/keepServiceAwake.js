@@ -2,7 +2,7 @@ const { AXIOS } = require('../../config/constants').constants;
 
 const URL = process.env.BACKEND_URL;
 
-const INTERVAL = 300000;
+const INTERVAL = 1800000; // 3 minutes in milliseconds
 
 const keepServiceAwake = async () => {
   try {
