@@ -10,6 +10,15 @@ const { CheckUserAuth } = require('../../policies/CheckUserAuth');
 // Import the controller
 const AuthController = require('../../controllers/user/AuthController');
 
+const cache = require('../../policies/redisCache');
+
+// === Dynamic Redis Caching Middleware ===
+const cacheRoutes = {
+  'GET:/get-user-details': { ttl: 300 },
+};
+
+ROUTER.use(cache(cacheRoutes));
+
 ROUTER.post('/signup-email', AuthController.signUpUserEmail)
   .post('/verify-email', AuthController.verifyUserEmail)
   .post('/signin-email', AuthController.signInUserEmail)
