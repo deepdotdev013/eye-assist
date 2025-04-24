@@ -24,6 +24,8 @@ const VALIDATION_EVENTS = {
   VerifyUserEmail: 'verifyUserEmail',
   SignInUserEmail: 'signInUserEmail',
   OnBoardUser: 'onBoardUser',
+  CreateQualificationStream: 'createQualificationStream',
+  GetAllStreams: 'getAllStreams',
 };
 
 // Roles of the user

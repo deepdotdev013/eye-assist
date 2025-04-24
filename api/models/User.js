@@ -94,6 +94,10 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    preferredLanguage: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     aboutMe: {
       type: DataTypes.STRING,
       allowNull: true,
