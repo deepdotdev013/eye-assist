@@ -25,8 +25,9 @@ ROUTER.use(cache(cacheRoutes));
 ROUTER.post('/create', QualificationController.createQualificationStream)
   .get(
     '/all-qualifications',
+    [CheckUserAuth],
     QualificationController.getAllHighestQualification,
   )
-  .get('/all-streams', QualificationController.getAllStreams);
+  .get('/all-streams', [CheckUserAuth], QualificationController.getAllStreams);
 
 module.exports = ROUTER;
