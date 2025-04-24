@@ -86,11 +86,11 @@ const User = sequelize.define(
       type: DataTypes.SMALLINT,
       defaultValue: 0,
     },
-    highestQualification: {
+    highestQualificationId: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    stream: {
+    streamId: {
       type: DataTypes.STRING,
       allowNull: true,
     },
@@ -99,6 +99,14 @@ const User = sequelize.define(
       allowNull: true,
     },
     aboutMe: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    otherQualification: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    otherStream: {
       type: DataTypes.STRING,
       allowNull: true,
     },

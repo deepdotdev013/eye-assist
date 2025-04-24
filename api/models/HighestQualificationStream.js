@@ -37,10 +37,6 @@ const HighestQualificationStream = sequelize.define(
         key: 'id',
       },
     },
-    other: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
     eligibleForStudent: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
