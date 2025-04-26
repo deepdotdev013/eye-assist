@@ -499,13 +499,23 @@ module.exports = {
       // Create the bodyData
       const bodyData = {
         userId: req.user.id,
+        // Mandatory fields
         isPageSkipped: req.body.isPageSkipped,
         stepComplete: req.body.stepComplete,
+
+        // Step #1 Data
         dob: req.body.dob,
         age: req.body.age,
         gender: req.body.gender,
         country: req.body.country,
         mobileNumber: req.body.mobileNumber,
+
+        // Step #2 Data
+        highestQualificationId: req.body.highestQualificationId,
+        streamId: req.body.streamId,
+        otherQualification: req.body.otherQualification,
+        otherStream: req.body.otherStream,
+        preferredLanguage: req.body.preferredLanguage,
         eventCode: VALIDATION_EVENTS.OnBoardUser,
       };
 
@@ -568,6 +578,13 @@ module.exports = {
             },
           });
         } else if (bodyData.stepComplete === 2) {
+          // Update the user details for step 1.
+          await User.update(updatedData, {
+            where: {
+              id: bodyData.userId,
+              isDeleted: false,
+            },
+          });
         } else if (bodyData.stepComplete === 3) {
         }
       }

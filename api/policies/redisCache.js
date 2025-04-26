@@ -25,18 +25,26 @@ const redisCache = (cacheRoutes = {}) => {
         return res.status(parsed.status || 200).json(parsed);
       }
 
+      // Patch res.json to cache successful responses only
       const originalJson = res.json.bind(res);
       res.json = (body) => {
-        redisClient.set(key, JSON.stringify(body), {
-          EX: cacheRoutes[baseKey].ttl || 300,
-        });
+        // Only cache if status is 200 or explicitly allowed
+        if (res.statusCode === 200) {
+          redisClient.set(
+            key,
+            JSON.stringify({ ...body, status: res.statusCode }),
+            {
+              EX: cacheRoutes[baseKey].ttl || 300,
+            },
+          );
+        }
         return originalJson(body);
       };
 
       next();
     } catch (err) {
       console.error('❌ Redis cache middleware error:', err);
-      next(); // fallback gracefully
+      next(); // graceful fallback
     }
   };
 };

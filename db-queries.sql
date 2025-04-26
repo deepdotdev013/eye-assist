@@ -49,3 +49,8 @@ CREATE TABLE
 	);
 
 ALTER TABLE "highest_qualification_stream" ADD CONSTRAINT "highest_qualification_stream_id_fk" FOREIGN KEY ("parentQualificationId") REFERENCES "highest_qualification_stream" ("id") ON DELETE CASCADE;
+
+-- END 20-04-2025
+-- START 25-04-2025
+ALTER TABLE "user" ADD CONSTRAINT "highest_qualification_stream_id_fk" FOREIGN KEY ("highestQualificationId") REFERENCES "highest_qualification_stream" ("id") ON DELETE CASCADE,
+ADD CONSTRAINT "stream_id_fk" FOREIGN KEY ("streamId") REFERENCES "highest_qualification_stream" ("id") ON DELETE CASCADE;

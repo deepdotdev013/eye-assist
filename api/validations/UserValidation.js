@@ -64,6 +64,11 @@ const validateUserData = (bodyData) => {
         gender: 'string',
         country: 'string',
         mobileNumber: 'string',
+        highestQualificationId: 'string',
+        streamId: 'string',
+        otherQualification: 'string',
+        otherStream: 'string',
+        preferredLanguage: 'string',
       };
       break;
     }

@@ -6,6 +6,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../../config/sequelize');
 const { defaultAttributes } = require('../../config/constants').constants;
+const { HighestQualificationStream } = require('./index');
 
 const User = sequelize.define(
   'User',
@@ -87,12 +88,20 @@ const User = sequelize.define(
       defaultValue: 0,
     },
     highestQualificationId: {
-      type: DataTypes.STRING,
+      type: DataTypes.UUID,
       allowNull: true,
+      references: {
+        model: HighestQualificationStream,
+        key: 'id',
+      },
     },
     streamId: {
-      type: DataTypes.STRING,
+      type: DataTypes.UUID,
       allowNull: true,
+      references: {
+        model: HighestQualificationStream,
+        key: 'id',
+      },
     },
     preferredLanguage: {
       type: DataTypes.STRING,
