@@ -6,7 +6,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../../config/sequelize');
 const { defaultAttributes } = require('../../config/constants').constants;
-const { HighestQualificationStream } = require('./index');
+const HighestQualificationStream = require('./HighestQualificationStream');
 
 const User = sequelize.define(
   'User',

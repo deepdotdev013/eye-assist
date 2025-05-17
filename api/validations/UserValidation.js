@@ -69,6 +69,7 @@ const validateUserData = (bodyData) => {
         otherQualification: 'string',
         otherStream: 'string',
         preferredLanguage: 'string',
+        aboutMe: 'string|max:500',
       };
       break;
     }

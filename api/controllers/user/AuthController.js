@@ -516,6 +516,7 @@ module.exports = {
         otherQualification: req.body.otherQualification,
         otherStream: req.body.otherStream,
         preferredLanguage: req.body.preferredLanguage,
+        aboutMe: req.body.aboutMe,
         eventCode: VALIDATION_EVENTS.OnBoardUser,
       };
 
