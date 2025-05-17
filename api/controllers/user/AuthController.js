@@ -410,6 +410,12 @@ module.exports = {
         	U."mobileNumber",
         	U."token",
         	U."isEmailVerified",
+          U."highestQualificationId",
+          U."streamId",
+          U."otherQualification",
+          U."otherStream",
+          U."preferredLanguage",
+          U."aboutMe",
         	U."stepComplete"
         FROM
         	"user" U
