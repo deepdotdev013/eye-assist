@@ -7,8 +7,15 @@ const JWT = require('jsonwebtoken');
 const FS = require('fs');
 const NODEMAILER = require('nodemailer');
 const AXIOS = require('axios');
+const MULTER = require('multer');
+const { createClient } = require('@supabase/supabase-js');
 
+// Salt rounds for bcrypt
 const SALT_ROUNDS = 10;
+
+// Name of the supabase bucket for media upload.
+const BUCKET_NAME = 'media';
+
 // Response Codes
 const RESPONSE_CODES = {
   Ok: 200,
@@ -26,6 +33,7 @@ const VALIDATION_EVENTS = {
   OnBoardUser: 'onBoardUser',
   CreateQualificationStream: 'createQualificationStream',
   GetAllStreams: 'getAllStreams',
+  UploadMedia: 'uploadMedia',
 };
 
 // Roles of the user
@@ -52,6 +60,22 @@ const EMAIL_EVENTS = {
   LoginUser: 'loginUser',
 };
 
+// Allowed files types for upload
+const ALLOWED_FILE_TYPES = {
+  Jpg: 'jpg',
+  Jpeg: 'jpeg',
+  Png: 'png',
+  Mov: 'mov',
+  Mp4: 'mp4',
+  Mp3: 'mp3',
+};
+
+// Types of files allowed
+const FILE_TYPES = {
+  Image: 'image',
+  Video: 'video',
+};
+
 // Export the constants
 module.exports.constants = {
   defaultAttributes,
@@ -70,4 +94,9 @@ module.exports.constants = {
   NODEMAILER,
   EMAIL_EVENTS,
   AXIOS,
+  MULTER,
+  ALLOWED_FILE_TYPES,
+  createClient,
+  BUCKET_NAME,
+  FILE_TYPES,
 };

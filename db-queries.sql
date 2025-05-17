@@ -54,3 +54,21 @@ ALTER TABLE "highest_qualification_stream" ADD CONSTRAINT "highest_qualification
 -- START 25-04-2025
 ALTER TABLE "user" ADD CONSTRAINT "highest_qualification_stream_id_fk" FOREIGN KEY ("highestQualificationId") REFERENCES "highest_qualification_stream" ("id") ON DELETE CASCADE,
 ADD CONSTRAINT "stream_id_fk" FOREIGN KEY ("streamId") REFERENCES "highest_qualification_stream" ("id") ON DELETE CASCADE;
+
+-- END 25-04-2025
+-- START 17-05-2025
+CREATE TABLE
+	"media" (
+		"id" VARCHAR PRIMARY KEY NOT NULL,
+		"mediaUrl" VARCHAR NOT NULL,
+		"mediaType" VARCHAR NOT NULL,
+		"mimeType" VARCHAR NOT NULL,
+		"fileName" VARCHAR NOT NULL,
+		"fullPath" VARCHAR NOT NULL,
+		"duration" NUMERIC(1000, 2) DEFAULT 0,
+		"isDeleted" BOOLEAN DEFAULT FALSE,
+		"createdAt" BIGINT NULL,
+		"createdBy" VARCHAR NULL,
+		"updatedAt" BIGINT NULL,
+		"updatedBy" VARCHAR NULL
+	);
