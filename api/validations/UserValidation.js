@@ -70,6 +70,7 @@ const validateUserData = (bodyData) => {
         otherStream: 'string',
         preferredLanguage: 'string',
         aboutMe: 'string|max:500',
+        certificateId: 'string',
       };
       break;
     }

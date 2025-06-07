@@ -24,7 +24,6 @@ module.exports = {
         userId: req.user.id,
         file: req.file,
         mediaType: req.body.mediaType,
-        mimetype: req.file.mimetype.split('/')?.[1],
         duration: req.body.duration || 0,
         eventCode: VALIDATION_EVENTS.UploadMedia,
       };
@@ -37,6 +36,9 @@ module.exports = {
           data: null,
         });
       }
+
+      // If the file is present then add the mimetype to it.
+      mediaData.mimetype = req.file.mimetype.split('/')?.[1];
 
       // Validate the incoming data
       const result = validateMediaData(mediaData);

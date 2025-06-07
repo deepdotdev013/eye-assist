@@ -7,6 +7,7 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../../config/sequelize');
 const { defaultAttributes } = require('../../config/constants').constants;
 const HighestQualificationStream = require('./HighestQualificationStream');
+const Media = require('./Media');
 
 const User = sequelize.define(
   'User',
@@ -118,6 +119,14 @@ const User = sequelize.define(
     otherStream: {
       type: DataTypes.STRING,
       allowNull: true,
+    },
+    certificateId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      references: {
+        model: Media,
+        key: 'id',
+      },
     },
   },
   {

@@ -416,9 +416,14 @@ module.exports = {
           U."otherStream",
           U."preferredLanguage",
           U."aboutMe",
+          CASE WHEN U."certificateId" IS NULL AND M."mediaUrl" IS NULL THEN NULL
+            ELSE JSONB_BUILD_OBJECT(
+                  'id', U."certificateId",
+                  'mediaUrl', M."mediaUrl"
+          ) END AS "certificateData",
         	U."stepComplete"
         FROM
-        	"user" U
+        	"user" U LEFT JOIN "media" M ON U."certificateId" = M."id" AND M."isDeleted" = FALSE
         WHERE
         	U."isDeleted" = FALSE
         	AND U."id" = :userId`;
@@ -523,6 +528,10 @@ module.exports = {
         otherStream: req.body.otherStream,
         preferredLanguage: req.body.preferredLanguage,
         aboutMe: req.body.aboutMe,
+
+        // Step #3 Data
+        certificateId: req.body.certificateId,
+
         eventCode: VALIDATION_EVENTS.OnBoardUser,
       };
 
@@ -576,24 +585,12 @@ module.exports = {
         );
       } else {
         // If the user clicks on continue, then save the data.
-        if (bodyData.stepComplete === 1) {
-          // Update the user details for step 1.
-          await User.update(updatedData, {
-            where: {
-              id: bodyData.userId,
-              isDeleted: false,
-            },
-          });
-        } else if (bodyData.stepComplete === 2) {
-          // Update the user details for step 1.
-          await User.update(updatedData, {
-            where: {
-              id: bodyData.userId,
-              isDeleted: false,
-            },
-          });
-        } else if (bodyData.stepComplete === 3) {
-        }
+        await User.update(updatedData, {
+          where: {
+            id: bodyData.userId,
+            isDeleted: false,
+          },
+        });
       }
 
       // Success Response
